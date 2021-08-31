@@ -4,13 +4,13 @@ import (
 	"errors"
 	"io/ioutil"
 	"os"
+	"strings"
 
 	log "github.com/sirupsen/logrus"
 	"github.com/urfave/cli"
-	"strings"
 )
 
-var VersionString string
+var VersionString = "(no version set)"
 
 func init() {
 	log.SetLevel(log.InfoLevel)

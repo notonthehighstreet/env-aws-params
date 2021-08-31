@@ -1,7 +1,7 @@
 .DEFAULT_GOAL = build
 
 GO := go
-DEP := dep
+version := $(shell ./get-version.sh)
 
 PKG_NAME=env-aws-params
 
@@ -13,17 +13,13 @@ clean:
 
 PLATFORMS := linux-amd64 linux-arm64 darwin-amd64
 
-deps: 
-	@ $(DEP) ensure
-	@ $(DEP) check
-
 os = $(word 1,$(subst -, ,$@))
 arch = $(word 2,$(subst -, ,$@))
 platform = $(word 2,$(subst _, ,$@))
 
 $(PLATFORMS): deps
 	GOOS=$(os) GOARCH=$(arch) $(GO) build \
-		-ldflags "-w -s -X main.VersionString=v${TRAVIS_TAG}" \
+		-ldflags "-w -s $(version)" \
 		-o target/$(PKG_NAME)_$@ 
 
 TARGETS = $(addprefix target/$(PKG_NAME)_,$(PLATFORMS))
@@ -31,12 +27,20 @@ TARGETS = $(addprefix target/$(PKG_NAME)_,$(PLATFORMS))
 $(TARGETS): 
 	make $(platform)
 
-test: deps
+linux: target/env-aws-params_linux-amd64
+
+arm: target/env-aws-params_linux-arm64
+
+macos: target/env-aws-params_darwin-amd64
+
+darwin: target/env-aws-params_darwin-amd64
+
+test:
 	$(GO) test
 
 fmt:
 	$(GO) fmt
 
-build: fmt deps test $(TARGETS)
+build: fmt test $(TARGETS)
 
-.PHONY: deps build
+.PHONY: deps build linux

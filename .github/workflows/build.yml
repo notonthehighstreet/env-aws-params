@@ -1,0 +1,30 @@
+name: build-release
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - uses: actions/setup-go@v1
+        with:
+          go-version: '1.17' # The Go version to download (if necessary) and use.
+      - name: Test
+        run: make test
+      - name: Build
+        run: |
+          make linux arm macos
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: |
+            target/env-aws-params_linux-amd64
+            target/env-aws-params_linux-arm64
+            target/env-aws-params_darwin-amd64
+          body: |
+            See the [CHANGELOG](https://github.com/lnxjedi/env-aws-params/blob/main/CHANGELOG.md)
