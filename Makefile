@@ -11,7 +11,7 @@ clean:
 	@ $(GO) clean
 	@ rm -rf target/
 
-PLATFORMS := linux-amd64 linux-arm64 darwin-amd64
+PLATFORMS := linux-amd64 alpine-linux-amd64 linux-arm64 darwin-amd64
 
 os = $(word 1,$(subst -, ,$@))
 arch = $(word 2,$(subst -, ,$@))
