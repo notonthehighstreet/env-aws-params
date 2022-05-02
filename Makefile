@@ -20,12 +20,14 @@ platform = $(word 2,$(subst _, ,$@))
 $(PLATFORMS): deps
 	GOOS=$(os) GOARCH=$(arch) $(GO) build \
 		-ldflags "-w -s $(version)" \
-		-o target/$(PKG_NAME)_$@ 
+		-o target/$(PKG_NAME)_$@
 
 TARGETS = $(addprefix target/$(PKG_NAME)_,$(PLATFORMS))
 
-$(TARGETS): 
+$(TARGETS):
 	make $(platform)
+
+alpine-linux: target/env-aws-params_alpine-linux-amd64
 
 linux: target/env-aws-params_linux-amd64
 
