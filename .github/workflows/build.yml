@@ -27,7 +27,6 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            target/env-aws-params_alpine-linux-amd64
             target/env-aws-params_linux-amd64
             target/env-aws-params_linux-arm64
             target/env-aws-params_darwin-amd64

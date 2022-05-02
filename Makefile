@@ -11,14 +11,14 @@ clean:
 	@ $(GO) clean
 	@ rm -rf target/
 
-PLATFORMS := linux-amd64 alpine-linux-amd64 linux-arm64 darwin-amd64
+PLATFORMS := linux-amd64 linux-arm64 darwin-amd64
 
 os = $(word 1,$(subst -, ,$@))
 arch = $(word 2,$(subst -, ,$@))
 platform = $(word 2,$(subst _, ,$@))
 
 $(PLATFORMS): deps
-	GOOS=$(os) GOARCH=$(arch) $(GO) build \
+	GOOS=$(os) GOARCH=$(arch) CGO_ENABLED=0 $(GO) build \
 		-ldflags "-w -s $(version)" \
 		-o target/$(PKG_NAME)_$@
 
@@ -26,8 +26,6 @@ TARGETS = $(addprefix target/$(PKG_NAME)_,$(PLATFORMS))
 
 $(TARGETS):
 	make $(platform)
-
-alpine-linux: target/env-aws-params_alpine-linux-amd64
 
 linux: target/env-aws-params_linux-amd64
 
